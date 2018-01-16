@@ -1,4 +1,4 @@
-package com.yinheng.x_apr;
+package com.yinheng.xapr;
 
 import android.app.Activity;
 import android.os.Bundle;
