@@ -20,4 +20,9 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    annotationProcessor 'org.projectlombok:lombok:1.16.16'
+    provided 'org.projectlombok:lombok:1.16.16'
+
+    provided 'de.robv.android.xposed:api:82'
 }
