@@ -68,7 +68,7 @@ public class SystemGesturesPointerEventListener implements PointerEventListener 
     public SystemGesturesPointerEventListener(Context context, Callbacks callbacks) {
         mContext = context;
         mCallbacks = checkNull("callbacks", callbacks);
-        mSwipeStartThreshold =100;
+        mSwipeStartThreshold = 100;
 //                = checkNull("context", context).getResources()
 //                .getDimensionPixelSize(com.android.internal.R.dimen.status_bar_height);
         mSwipeDistanceThreshold = mSwipeStartThreshold;
@@ -128,7 +128,8 @@ public class SystemGesturesPointerEventListener implements PointerEventListener 
                         int pointerId = event.getPointerId(0);
                         final int i = findIndex(pointerId);
                         int x = (int) mDownX[i];
-                        mCallbacks.onSwipeFromBottom(x);
+                        int y = (int) mDownY[i];
+                        mCallbacks.onSwipeFromBottom(x, y);
                     } else if (swipe == SWIPE_FROM_RIGHT) {
                         if (DEBUG) Slog.d(TAG, "Firing onSwipeFromRight");
                         mCallbacks.onSwipeFromRight();
@@ -278,7 +279,7 @@ public class SystemGesturesPointerEventListener implements PointerEventListener 
     interface Callbacks {
         void onSwipeFromTop();
 
-        void onSwipeFromBottom(int x);
+        void onSwipeFromBottom(int x, int y);
 
         void onSwipeFromRight();
 

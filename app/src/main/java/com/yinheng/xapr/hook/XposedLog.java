@@ -12,4 +12,13 @@ public class XposedLog {
     public static void boot(String format, Object... args) {
         XposedBridge.log("X-APR-" + String.format(format, args));
     }
+
+
+    public static void wtf(String format, Object... args) {
+        XposedBridge.log("X-APR-WTF-" + String.format(format, args));
+    }
+
+    public static void verbose(String format, Object... args) {
+        XposedBridge.log("X-APR-V-" + String.format(format, args));
+    }
 }

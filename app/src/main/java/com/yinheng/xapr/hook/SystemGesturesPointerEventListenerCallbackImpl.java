@@ -1,17 +1,43 @@
 package com.yinheng.xapr.hook;
 
-import lombok.AllArgsConstructor;
+import android.content.Context;
+import android.view.Display;
+import android.view.WindowManager;
+
 import lombok.Getter;
 
 /**
  * Created by guohao4 on 2018/1/16.
  * Email: Tornaco@163.com
  */
-@AllArgsConstructor
 @Getter
 public class SystemGesturesPointerEventListenerCallbackImpl
         implements SystemGesturesPointerEventListener
         .Callbacks {
+
+    private int screenWidth, screenHeight;
+
+    private Context context;
+
+    SystemGesturesPointerEventListenerCallbackImpl(Context context) {
+        this.context = context;
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        screenWidth = display.getWidth();  // deprecated
+        screenHeight = display.getHeight();  // deprecated
+    }
+
+    SwipeAreaX getSwipeAreaX(int x) {
+        if (x <= screenWidth / 4) return SwipeAreaX.LEFT;
+        if (x >= screenWidth - screenWidth / 4) return SwipeAreaX.RIGHT;
+        return SwipeAreaX.CENTER;
+    }
+
+    SwipeAreaY getSwipeAreaY(int y) {
+        if (y <= screenHeight / 4) return SwipeAreaY.TOP;
+        if (y >= screenHeight - screenHeight / 4) return SwipeAreaY.BOTTOM;
+        return SwipeAreaY.CENTER;
+    }
 
     @Override
     public void onSwipeFromTop() {
@@ -19,8 +45,24 @@ public class SystemGesturesPointerEventListenerCallbackImpl
     }
 
     @Override
-    public void onSwipeFromBottom(int x) {
-        XposedLog.boot("onSwipeFromBottom: " + x);
+    public void onSwipeFromBottom(int x, int y) {
+        SwipeAreaX sax = getSwipeAreaX(x);
+        SwipeAreaY say = getSwipeAreaY(y);
+        XposedLog.boot("onSwipeFromBottom: %s-%s %s-%s", x, y, sax, say);
+
+        if (say == SwipeAreaY.BOTTOM) {
+            switch (sax) {
+                case LEFT:
+                    KeyEventSender.injectBackKey();
+                    break;
+                case CENTER:
+                    KeyEventSender.injectHomeKey();
+                    break;
+                case RIGHT:
+                    KeyEventSender.injectRecentKey();
+                    break;
+            }
+        }
     }
 
     @Override
